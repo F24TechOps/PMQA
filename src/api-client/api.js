@@ -10,13 +10,13 @@ const baseURL = "http://localhost:4000/api";
  * @returns
  */
 export async function sendRunData(runData) {
-  return await axios.post(`${baseURL}/run`, runData);
+  return await axios.post(`${baseURL}/qa/run`, runData);
 }
 
 export async function getHistoricRuns() {
-  return await axios.get(`${baseURL}/runs`);
+  return await axios.get(`${baseURL}/qa/runs`);
 }
 
 export async function getResults() {
-  return await axios.get(`${baseURL}/results`);
+  return await axios.get(`${baseURL}/qa/results`);
 }
