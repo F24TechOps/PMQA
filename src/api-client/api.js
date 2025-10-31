@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:4000/api";
+const baseURL = "http://localhost:4000/api/qa";
 
 /**
  *
@@ -10,13 +10,31 @@ const baseURL = "http://localhost:4000/api";
  * @returns
  */
 export async function sendRunData(runData) {
-  return await axios.post(`${baseURL}/qa/run`, runData);
+  return await axios.post(`${baseURL}/run`, runData);
 }
 
 export async function getHistoricRuns() {
-  return await axios.get(`${baseURL}/qa/runs`);
+  return await axios.get(`${baseURL}/runs`);
 }
 
 export async function getResults() {
-  return await axios.get(`${baseURL}/qa/results`);
+  return await axios.get(`${baseURL}/results`);
 }
+
+export async function getAccounts() {
+  const response = await axios.get(`${baseURL}/accounts`);
+  return response.data;
+}
+
+export async function getCyclesByAccount(accountID) {
+  const response = await axios.get(`${baseURL}/${accountID}/cycles`);
+  return response.data;
+}
+
+export async function runTransactionValidation(accountID, cycleID, transactionID) {
+  const { data } = await axios.get(
+    `${baseURL}/transactions/${accountID}/${cycleID}/${transactionID}`
+  );
+  return data.transaction?.Response;
+}
+
