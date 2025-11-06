@@ -1,25 +1,24 @@
-import Card from "./ui/card";
-import {
-  getAccounts,
-  getCyclesByAccount,
-  runTransactionValidation,
-} from "../api-client/api";
 import React, { useEffect, useState } from "react";
+import Card from "./ui/card";
 import { AiOutlinePlayCircle } from "react-icons/ai";
+import { getAccounts, getCyclesByAccount, runTransactionValidation } from "../api-client/api";
+
+import AccountDropdown from "./ui/AccountDropdown"
+import CycleDropdown from "./ui/CycleDropdown";
 
 export default function TransactionContext() {
-  const [accounts, setAccounts] = useState([]); // list of accounts for dropdown
-  const [selectedAccount, setSelectedAccount] = useState(""); // currently selected account
-  const [cycles, setCycles] = useState([]); // list of cycles for selected account
-  const [selectedCycle, setSelectedCycle] = useState(""); // currently selected cycle
-  const [transactionId, setTransactionId] = useState(""); // inputted transaction ID
+  const [accounts, setAccounts] = useState([]);
+  const [selectedAccount, setSelectedAccount] = useState("");
+  const [cycles, setCycles] = useState([]);
+  const [selectedCycle, setSelectedCycle] = useState("");
+  const [transactionId, setTransactionId] = useState("");
 
   // Fetch accounts on mount
   useEffect(() => {
     async function fetchAccounts() {
       try {
         const data = await getAccounts();
-        setAccounts(data); // populate account dropdown
+        setAccounts(data);
       } catch (err) {
         console.error("Error fetching accounts:", err);
       }
@@ -27,17 +26,17 @@ export default function TransactionContext() {
     fetchAccounts();
   }, []);
 
-  // Fetch cycles whenever selectedAccount changes
+  // Fetch cycles when selectedAccount changes
   useEffect(() => {
     async function fetchCycles() {
       if (!selectedAccount) {
-        setCycles([]); // clear cycles if no account selected
-        setSelectedCycle(""); // reset selected cycle
+        setCycles([]);
+        setSelectedCycle("");
         return;
       }
       try {
         const cyclesData = await getCyclesByAccount(selectedAccount);
-        setCycles(cyclesData); // populate cycle dropdown
+        setCycles(cyclesData);
       } catch (err) {
         console.error("Error fetching cycles:", err);
       }
@@ -45,20 +44,15 @@ export default function TransactionContext() {
     fetchCycles();
   }, [selectedAccount]);
 
-  // Called when user clicks the submit button
   const handleSubmit = async () => {
     if (!selectedAccount || !selectedCycle || !transactionId) {
-      alert("Please fill all fields!"); // basic validation
+      alert("Please fill all fields!");
       return;
     }
 
     try {
-      const result = await runTransactionValidation(
-        selectedAccount,
-        selectedCycle,
-        transactionId
-      );
-      console.log("Validation result:", result); // log returned transaction validation
+      const result = await runTransactionValidation(selectedAccount, selectedCycle, transactionId);
+      console.log("Validation result:", result);
       alert("Transaction validated successfully!");
     } catch (err) {
       console.error("Error validating transaction:", err);
@@ -70,141 +64,65 @@ export default function TransactionContext() {
     <Card>
       <div style={{ padding: "1rem", textAlign: "left" }}>
         <h3>Transaction Context</h3>
-        <p>
-          Select the account, cycle, and enter the transaction ID for validation
-        </p>
+        <p>Select the account, cycle, and enter the transaction ID for validation</p>
 
-        {/* Responsive container for form fields */}
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "1rem",
-            marginTop: "1rem",
-          }}
-        >
-          {/* Account Dropdown */}
-          <div
-            style={{
-              flex: "1 1 250px",
-              minWidth: "200px",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <div style={{ padding: "0 0 15px 0" }}>
-              <label><strong>Account</strong></label>
-            </div>
-
-            <select
-              value={selectedAccount}
-              onChange={(e) => setSelectedAccount(e.target.value)}
-              style={{
-                padding: "1rem",
-                borderRadius: "0.75rem",
-                backgroundColor: "#f4f5f6",
-                color: "#000000",
-                borderColor: "#f4f5f6"
-              }}
-            >
-              <option value="">Select Account...</option>
-              {accounts.map((account) => (
-                <option key={account.Id} value={account.Id}>
-                  {account.Name}
-                </option>
-              ))}
-            </select>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginTop: "1rem" }}>
+          <div style={{ flex: "1 1 250px", minWidth: "200px" }}>
+            <AccountDropdown
+              accounts={accounts}
+              selectedAccount={selectedAccount}
+              setSelectedAccount={setSelectedAccount}
+            />
           </div>
 
-          {/* Cycle Dropdown */}
-          <div
-            style={{
-              flex: "1 1 250px",
-              minWidth: "200px",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <div style={{ padding: "0 0 15px 0" }}>
-              <label><strong>Cycle</strong></label>
-            </div>
-            <select
-              value={selectedCycle}
-              onChange={(e) => setSelectedCycle(e.target.value)}
-              style={{
-                padding: "1rem",
-                borderRadius: "0.75rem",
-                backgroundColor: "#f4f5f6",
-                color: "#000000",
-                borderColor: "#f4f5f6"
-              }}
-            >
-              <option value="">Select Cycle...</option>
-              {cycles.map((cycle) => (
-                <option key={cycle.Id} value={cycle.Id}>
-                  {cycle.Name}
-                </option>
-              ))}
-            </select>
+          <div style={{ flex: "1 1 250px", minWidth: "200px" }}>
+            <CycleDropdown
+              cycles={cycles}
+              selectedCycle={selectedCycle}
+              setSelectedCycle={setSelectedCycle}
+            />
           </div>
 
-          {/* Transaction ID Input */}
-          <div
-            style={{
-              flex: "1 1 250px",
-              minWidth: "200px",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <div style={{ padding: "0 0 15px 0" }}>
-              <label><strong>Transaction ID</strong></label>
-            </div>
+          <div style={{ flex: "1 1 250px", minWidth: "200px", display: "flex", flexDirection: "column" }}>
+            <label><strong>Transaction ID</strong></label>
             <input
               type="text"
               value={transactionId}
               onChange={(e) => setTransactionId(e.target.value)}
               placeholder="Enter Transaction ID..."
               style={{
-               padding: "1rem",
+                padding: "1rem",
                 borderRadius: "0.75rem",
                 backgroundColor: "#f4f5f6",
                 color: "#000000",
                 border: "1px solid #f4f5f6",
-                 outline: "none",
+                outline: "none",
+                marginTop: "1rem"
               }}
             />
           </div>
         </div>
 
-        {/* Submit Button */}
-        <div
-          style={{
-            marginTop: "2rem",
-            display: "flex",
-            justifyContent: "flex-start",
-          }}
-        >
-        <button
-  onClick={handleSubmit}
-  style={{
-    padding: "0.25rem 0.75rem",          
-    backgroundColor: "#3a86e9",
-    color: "#ffffff",
-    border: "none",
-    borderRadius: "1rem",
-    width: "200px",
-    maxWidth: "90%",
-    cursor: "pointer",
-    display: "flex",                  
-    alignItems: "center",             
-    justifyContent: "center",         
-  }}
->
- <AiOutlinePlayCircle size="2em" style={{paddingRight: "10px"}}/>
-  <p style={{fontSize: "1rem"}}><strong>Run Validation</strong></p>
-</button>
-
+        <div style={{ marginTop: "2rem", display: "flex", justifyContent: "flex-start" }}>
+          <button
+            onClick={handleSubmit}
+            style={{
+              padding: "0.25rem 0.75rem",
+              backgroundColor: "#3a86e9",
+              color: "#ffffff",
+              border: "none",
+              borderRadius: "1rem",
+              width: "200px",
+              maxWidth: "90%",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <AiOutlinePlayCircle size="2em" style={{ paddingRight: "10px" }} />
+            <p style={{ fontSize: "1rem" }}><strong>Run Validation</strong></p>
+          </button>
         </div>
       </div>
     </Card>
