@@ -8,8 +8,21 @@ import TransactionContext from "./components/TransactionContext.jsx";
 import Header from "./components/ui/header.jsx";
 import UploadSection from "./components/UploadSection.jsx";
 import TransactionHistory from "./components/TransactionHistory.jsx";
+import { useState, useEffect } from "react";
 
 function App() {
+  const [expectedFields, setExpectedFields] = useState([]);
+  const [actualJson, setActualJson] = useState(null);
+
+  // test for console
+   useEffect(() => {
+    console.log("Expected Fields changed:", expectedFields);
+  }, [expectedFields]);
+
+  useEffect(() => {
+    console.log("Actual JSON changed:", actualJson);
+  }, [actualJson]);
+
   return (
     <Router>
       {/* Header is always visible */}
