@@ -58,10 +58,14 @@ function App() {
                 <UploadSection
                   title="Expected Fields"
                   description="Upload or paste the list of fields that should exist in the workflow output"
+                  type="fields"
+                  onChange={setExpectedFields}
                 />
                 <UploadSection
                   title="Actual Output (JSON)"
                   description="Paste the JSON response from Cyclr transaction logs"
+                  type="json"
+                  onChange={setActualJson}
                 />
               </div>
               <TransactionContext className="transaction-component" />

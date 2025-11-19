@@ -7,10 +7,10 @@ export default function UploadSection({ title, description, type, onChange }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if(!input){
+     if(!input){
       onChange(null);
       setError(null);
-    }
+    } 
 
     if(type === "fields"){
     const fields = input.split(/[\n,]+/)
