@@ -9,10 +9,12 @@ import Header from "./components/ui/header.jsx";
 import UploadSection from "./components/UploadSection.jsx";
 import TransactionHistory from "./components/TransactionHistory.jsx";
 import { useState, useEffect } from "react";
+import { sendRunData } from "./api-client/api.js";
 
 function App() {
   const [expectedFields, setExpectedFields] = useState([]);
   const [actualJson, setActualJson] = useState(null);
+  const [transactionContext, setTransactionContext] = useState(null);
 
   // test for console
    useEffect(() => {
@@ -22,6 +24,23 @@ function App() {
   useEffect(() => {
     console.log("Actual JSON changed:", actualJson);
   }, [actualJson]);
+
+  useEffect(() => {
+    const payload = {
+      expectedFields, 
+      actualOutput: actualJson,
+      transactionContext
+    } 
+    console.log("sending payload to server", payload)
+
+    sendRunData(payload)
+    .then((res) => {
+      console.log("response data:", res.data)
+    })
+    .catch((err) => {
+      console.log("error sending data", err)
+    })
+  }, [expectedFields, actualJson, transactionContext])
 
   return (
     <Router>
@@ -39,10 +58,14 @@ function App() {
                 <UploadSection
                   title="Expected Fields"
                   description="Upload or paste the list of fields that should exist in the workflow output"
+                  type="fields"
+                  onChange={setExpectedFields}
                 />
                 <UploadSection
                   title="Actual Output (JSON)"
                   description="Paste the JSON response from Cyclr transaction logs"
+                  type="json"
+                  onChange={setActualJson}
                 />
               </div>
               <TransactionContext className="transaction-component" />
