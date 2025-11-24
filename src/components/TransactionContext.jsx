@@ -67,7 +67,7 @@ export default function TransactionContext() {
         <p>Select the account, cycle, and enter the transaction ID for validation</p>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginTop: "1rem" }}>
-          <div style={{ flex: "1 1 250px", minWidth: "200px" }}>
+          <div style={{ flex: "1 1 250px", minWidth: "200px"}}>
             <AccountDropdown
               accounts={accounts}
               selectedAccount={selectedAccount}
@@ -95,7 +95,7 @@ export default function TransactionContext() {
                 borderRadius: "0.75rem",
                 backgroundColor: "#f4f5f6",
                 color: "#000000",
-                border: "1px solid #f4f5f6",
+                border: "1px solid #ccc",
                 outline: "none",
                 marginTop: "1rem"
               }}

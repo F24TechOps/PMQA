@@ -42,7 +42,7 @@ export default function FiltersBox({ filters, setFilters, accounts, cycles }) {
             value={filters.dateFrom}
             onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value })}
             style={{
-              padding: "0.75rem",
+              padding: "0.9rem",
               borderRadius: "0.5rem",
               border: "1px solid #ccc",
               backgroundColor: "#f4f5f6",
@@ -59,7 +59,7 @@ export default function FiltersBox({ filters, setFilters, accounts, cycles }) {
             value={filters.dateTo}
             onChange={(e) => setFilters({ ...filters, dateTo: e.target.value })}
             style={{
-              padding: "0.75rem",
+              padding: "0.9rem",
               borderRadius: "0.5rem",
               border: "1px solid #ccc",
               backgroundColor: "#f4f5f6",
