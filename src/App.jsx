@@ -16,32 +16,6 @@ function App() {
   const [actualJson, setActualJson] = useState(null);
   const [transactionContext, setTransactionContext] = useState(null);
 
-  // test for console
-   useEffect(() => {
-    console.log("Expected Fields changed:", expectedFields);
-  }, [expectedFields]);
-
-  useEffect(() => {
-    console.log("Actual JSON changed:", actualJson);
-  }, [actualJson]);
-
-  useEffect(() => {
-    const payload = {
-      expectedFields, 
-      actualOutput: actualJson,
-      transactionContext
-    } 
-    console.log("sending payload to server", payload)
-
-    sendRunData(payload)
-    .then((res) => {
-      console.log("response data:", res.data)
-    })
-    .catch((err) => {
-      console.log("error sending data", err)
-    })
-  }, [expectedFields, actualJson, transactionContext])
-
   return (
     <Router>
       {/* Header is always visible */}
@@ -68,7 +42,11 @@ function App() {
                   onChange={setActualJson}
                 />
               </div>
-              <TransactionContext className="transaction-component" />
+              <TransactionContext
+                className="transaction-component"
+                expectedFields={expectedFields}
+                actualJson={actualJson}
+              />
               <EmptyValidation />
               <SummaryPanel />
               <ResultsTable />

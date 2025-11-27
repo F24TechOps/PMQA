@@ -10,7 +10,7 @@ const baseURL = "http://localhost:4000/api/qa";
  * @returns
  */
 export async function sendRunData(runData) {
-  return await axios.post(`${baseURL}/run`, runData);
+  return await axios.post(`${baseURL}/runs`, runData);
 }
 
 export async function getHistoricRuns() {
@@ -38,3 +38,7 @@ export async function runTransactionValidation(accountID, cycleID, transactionID
   return data.transaction?.Response;
 }
 
+export async function sendExpectedFieldUpload(expectedFields) {
+  const res = await axios.post(`${baseURL}/uploads`, expectedFields)
+  return res.data.uploadID;
+}
