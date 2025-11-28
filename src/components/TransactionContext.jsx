@@ -12,13 +12,12 @@ import {
 import AccountDropdown from "./ui/AccountDropdown";
 import CycleDropdown from "./ui/CycleDropdown";
 
-export default function TransactionContext({ expectedFields, actualJson }) {
+export default function TransactionContext({ expectedFields, actualJson, onRunResult }) {
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState("");
   const [cycles, setCycles] = useState([]);
   const [selectedCycle, setSelectedCycle] = useState("");
   const [transactionId, setTransactionId] = useState("");
-  const [data, setData] = useState({});
 
   // Fetch accounts on mount
   useEffect(() => {
@@ -58,7 +57,7 @@ export default function TransactionContext({ expectedFields, actualJson }) {
     }
 
     try {
-      const result = await runTransactionValidation(
+      await runTransactionValidation(
         selectedAccount,
         selectedCycle,
         transactionId
@@ -69,8 +68,8 @@ export default function TransactionContext({ expectedFields, actualJson }) {
         "Failed to validate transaction. Please check your inputs & try again. If this issue persists please raise a ticket with Technical Services"
       );
     }
-    
-   const uploadId = await sendExpectedFieldUpload(expectedFields);
+
+    const uploadId = await sendExpectedFieldUpload(expectedFields);
 
     const runData = {
       expectedFields: expectedFields,
@@ -80,14 +79,17 @@ export default function TransactionContext({ expectedFields, actualJson }) {
         cycleId: selectedCycle,
         transactionId: transactionId,
       },
-      uploadId: uploadId
+      uploadId: uploadId,
     };
 
     try {
       const res = await sendRunData(runData);
-      console.log(res, "response from run data");
+      
+      if (onRunResult) {
+        onRunResult(res)
+      }
     } catch (err) {
-      console.warn("Error starting run.");
+      console.warn("Error starting run.", err);
     }
   };
 

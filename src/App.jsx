@@ -9,12 +9,26 @@ import Header from "./components/ui/header.jsx";
 import UploadSection from "./components/UploadSection.jsx";
 import TransactionHistory from "./components/TransactionHistory.jsx";
 import { useState, useEffect } from "react";
-import { sendRunData } from "./api-client/api.js";
+import { getResults, sendRunData } from "./api-client/api.js";
 
 function App() {
   const [expectedFields, setExpectedFields] = useState([]);
   const [actualJson, setActualJson] = useState(null);
-  const [transactionContext, setTransactionContext] = useState(null);
+  const [resultId, setResultId] = useState(null);
+  const [resultData, setResultData] = useState(null);
+
+  useEffect(() => {
+    if (!resultId || !resultId.runId || !resultId.resultId) return;
+
+    async function getResult() {
+      const res = await getResults(resultId.runId, resultId.resultId);
+      setResultData(res.data.results.resultsObj);
+    }
+
+    getResult();
+  }, [resultId]);
+
+  console.log(resultData);
 
   return (
     <Router>
@@ -46,10 +60,16 @@ function App() {
                 className="transaction-component"
                 expectedFields={expectedFields}
                 actualJson={actualJson}
+                onRunResult={setResultId}
               />
-              <EmptyValidation />
-              <SummaryPanel />
-              <ResultsTable />
+              {resultData ? (
+                <div>
+                  <SummaryPanel runResult={resultData.summary} />
+                  <ResultsTable runResult={resultData.fields} />
+                </div>
+              ) : (
+                <EmptyValidation />
+              )}
             </div>
           }
         />
