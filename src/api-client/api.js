@@ -38,3 +38,7 @@ export async function runTransactionValidation(accountID, cycleID, transactionID
   return data.transaction?.Response;
 }
 
+export async function getResultsById(runId, resultId) {
+  const response = await axios.get(`${baseURL}/runs/${runId}/result/${resultId}`);
+  return response.data;
+}

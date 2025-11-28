@@ -20,3 +20,21 @@
   margin: 2em;
   width: -webkit-fill-available;
 }
+
+.loader-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+}
+
+.loader-container img {
+  width: 25%;
+  max-width: 200px;
+}
+
+.no-padding-card {
+  padding: 0 !important; /* override the default Card padding */
+}
