@@ -7,10 +7,10 @@ export default function UploadSection({ title, description, type, onChange }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if(!input){
+     if(!input){
       onChange(null);
       setError(null);
-    }
+    } 
 
     if(type === "fields"){
     const fields = input.split(/[\n,]+/)
@@ -46,6 +46,8 @@ export default function UploadSection({ title, description, type, onChange }) {
           padding: "0.5rem",
           borderRadius: "8px",
           border:"1px solid #ccc",
+          minHeight: "300px",
+          minWidth: "100%"
         }}
       />
     </Card>

@@ -4,8 +4,7 @@ export default function EmptyValidation() {
   return (
     <Card>
       <p>
-        Empty Validation - when no validation has occurred, will most likely be
-        a fallback
+        Please fill all the fields in and click "Run Validation".
       </p>
     </Card>
   );

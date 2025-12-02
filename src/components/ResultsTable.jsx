@@ -1,7 +1,16 @@
 import Card from "./ui/card";
+import { useState, useEffect } from "react";
+/*export default function ResultsTable({ runResult }) {
+  console.log('results table', runResult);*/
+export default function ResultsTable({ fields }) {
+  const [isLoading, setIsLoading] = useState(true);
+   useEffect(() => {
+    if (fields) {
+      setIsLoading(false);
+    }
+  }, [fields]);
 
-export default function ResultsTable({ fields, loading }) {
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="loader-container">
         <div className="loader"></div>
@@ -72,9 +81,10 @@ export default function ResultsTable({ fields, loading }) {
     return <span style={style}></span>;
   };
 
+
   return (
     <Card className="no-padding-card">
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
         <thead>
           <tr>
             <th

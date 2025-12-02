@@ -5,18 +5,20 @@ import {
   getAccounts,
   getCyclesByAccount,
   runTransactionValidation,
+  sendExpectedFieldUpload,
+  sendRunData,
 } from "../api-client/api";
 
 import AccountDropdown from "./ui/AccountDropdown";
 import CycleDropdown from "./ui/CycleDropdown";
 
 export default function TransactionContext({
-  setAccount,
-  setCycle,
+  expectedFields,
+  actualJson,
+  onRunResult,
   setSelectedAccountName,
   setSelectedCycleName,
-  onSuccess,
-  onRunValidation,
+  setSelectedTransactionId,
 }) {
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState("");
@@ -37,7 +39,6 @@ export default function TransactionContext({
     fetchAccounts();
   }, []);
 
-  // Fetch cycles when selectedAccount changes
   useEffect(() => {
     async function fetchCycles() {
       if (!selectedAccount) {
@@ -55,16 +56,17 @@ export default function TransactionContext({
     fetchCycles();
   }, [selectedAccount]);
 
-  // Update parent names whenever selection changes
   useEffect(() => {
-    const accountObj = accounts.find((a) => a.id === selectedAccount);
-    setSelectedAccountName(accountObj ? accountObj.name : "");
-  }, [selectedAccount, accounts, setSelectedAccountName]);
+  const accountObj = accounts.find((a) => String(a.Id) === String(selectedAccount));
+  setSelectedAccountName(accountObj?.Name || "");
+}, [selectedAccount, accounts, setSelectedAccountName]);
+
 
   useEffect(() => {
-    const cycleObj = cycles.find((c) => c.id === selectedCycle);
-    setSelectedCycleName(cycleObj ? cycleObj.name : "");
-  }, [selectedCycle, cycles, setSelectedCycleName]);
+  const cycleObj = cycles.find((c) => c.Id === selectedCycle);
+  setSelectedCycleName(cycleObj ? cycleObj.Name : "");
+}, [selectedCycle, cycles, setSelectedCycleName]);
+
 
   const handleSubmit = async () => {
     if (!selectedAccount || !selectedCycle || !transactionId) {
@@ -72,28 +74,48 @@ export default function TransactionContext({
       return;
     }
 
+
     try {
-      const result = await runTransactionValidation(
+      await runTransactionValidation(
         selectedAccount,
         selectedCycle,
         transactionId
       );
 
-      console.log("Validation result:", result);
 
-      // update parent names
-      const accountObj = accounts.find((a) => a.id === selectedAccount);
-      const cycleObj = cycles.find((c) => c.id === selectedCycle);
-      setSelectedAccountName(accountObj ? accountObj.name : "");
-      setSelectedCycleName(cycleObj ? cycleObj.name : "");
-
-      // call parent callback with current selection
-      if (typeof onRunValidation === "function") {
-        onRunValidation(result, transactionId); // pass transactionId too
-      }
+      const accountObj = accounts.find((a) => a.Id === selectedAccount);
+      const cycleObj = cycles.find((c) => c.Id === selectedCycle);
+      setSelectedAccountName(accountObj ? accountObj.Name : "");
+      setSelectedCycleName(cycleObj ? cycleObj.Name : "");
+      setSelectedTransactionId(transactionId);
     } catch (err) {
       console.error("Error validating transaction:", err);
-      alert("Failed to validate transaction.");
+      alert(
+        "Failed to validate transaction. Please check your inputs & try again. If this issue persists please raise a ticket with Technical Services"
+      );
+    }
+
+    const uploadId = await sendExpectedFieldUpload(expectedFields);
+
+    const runData = {
+      expectedFields: expectedFields,
+      actualOutput: actualJson,
+      transactionContext: {
+        accountId: selectedAccount,
+        cycleId: selectedCycle,
+        transactionId: transactionId,
+      },
+      uploadId: uploadId,
+    };
+
+    try {
+      const res = await sendRunData(runData);
+
+      if (onRunResult) {
+        onRunResult(res);
+      }
+    } catch (err) {
+      console.warn("Error starting run.", err);
     }
   };
 

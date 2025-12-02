@@ -1,19 +1,20 @@
 import Card from "./ui/card";
+//import { useState, useEffect } from "react";
 
-export default function SummaryPanel({ summary, loading, account, cycle, selectedAccountName, selectedCycleName }) {
-  if (loading)
-    return (
-      <Card>
-        <p>Loading summary...</p>
-      </Card>
-    );
+export default function SummaryPanel({
+  summary,
+  selectedAccountName,
+  selectedCycleName,
+  selectedTransactionId
+}) {
 
-  if (!summary)
+  if (!summary) {
     return (
       <Card>
         <p>No summary available.</p>
       </Card>
     );
+  }
 
   const totalFields =
     summary.correct +
@@ -22,8 +23,7 @@ export default function SummaryPanel({ summary, loading, account, cycle, selecte
     summary.warning +
     summary.null;
 
-  const passRate =
-    totalFields > 0 ? Math.round((summary.correct / totalFields) * 100) : 0;
+  //const passRate = totalFields > 0 ? Math.round((summary.correct / totalFields) * 100) : 0;
 
   const summaryItems = [
     { label: "Total Fields", value: totalFields, icon: "✓" },
@@ -48,7 +48,7 @@ export default function SummaryPanel({ summary, loading, account, cycle, selecte
         <h3 style={{ margin: 0 }}>Validation Summary</h3>
 
         <div style={{ textAlign: "right" }}>
-          <p
+          {/*<p
             style={{
               fontSize: "2rem",
               fontWeight: "bold",
@@ -58,10 +58,14 @@ export default function SummaryPanel({ summary, loading, account, cycle, selecte
           >
             {passRate}%
           </p>
-          <p>Pass Rate</p>
+          <p>Pass Rate</p> */}
         </div>
       </div>
-      <div style={{ textAlign: "left" }}><p>Workflow: {selectedAccountName} - {selectedCycleName}</p></div>
+      <div style={{ textAlign: "left" }}>
+        <p>
+          Workflow: {selectedAccountName} - {selectedCycleName} - {selectedTransactionId}
+        </p>
+      </div>
 
       {/* Summary Grid */}
       <div
@@ -82,7 +86,9 @@ export default function SummaryPanel({ summary, loading, account, cycle, selecte
               padding: "1rem",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <div
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+            >
               {/* Icon */}
               <span
                 style={{
@@ -106,7 +112,13 @@ export default function SummaryPanel({ summary, loading, account, cycle, selecte
                 >
                   {item.value}
                 </div>
-                <div style={{ fontSize: "1rem", marginTop: "0.25rem", textAlign: "left" }}>
+                <div
+                  style={{
+                    fontSize: "1rem",
+                    marginTop: "0.25rem",
+                    textAlign: "left",
+                  }}
+                >
                   {item.label}
                 </div>
               </div>
