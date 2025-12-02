@@ -47,3 +47,7 @@ export async function sendExpectedFieldUpload(expectedFields) {
   const res = await axios.post(`${baseURL}/uploads`, expectedFields);
   return res.data.uploadID;
 }
+
+export async function deleteRun(runId) {
+  return await axios.delete(`${baseURL}/run/${runId}`);
+}

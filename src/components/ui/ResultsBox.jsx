@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { IoPlayOutline } from "react-icons/io5";
 import { ImBin } from "react-icons/im";
+import { deleteRun } from "../../api-client/api.js";
 
 export default function ResultsBox({ runs = [] }) {
   const [sortAsc, setSortAsc] = useState(true);
@@ -19,6 +20,14 @@ export default function ResultsBox({ runs = [] }) {
       })
     : [];
 
+    async function handleDelete(id) {
+      try {
+        await deleteRun(id);
+      } catch (err) {
+        console.warn('run could not be deleted: ', err)
+      }
+    }
+
   return (
     <div style={{ marginTop: "1rem", overflowX: "auto" }}>
       
@@ -32,9 +41,9 @@ export default function ResultsBox({ runs = [] }) {
             <th style={{ textAlign: "left", padding: "8px" }}>Account</th>
             <th style={{ textAlign: "left", padding: "8px" }}>Cycle</th>
             <th style={{ textAlign: "left", padding: "8px" }}>Transaction ID</th>
-            <th style={{ textAlign: "left", padding: "8px" }}>Status</th>
-            <th style={{ textAlign: "left", padding: "8px" }}>Queue</th>
-            <th style={{ textAlign: "left", padding: "8px" }}>Pass Rate</th>
+            {/* <th style={{ textAlign: "left", padding: "8px" }}>Status</th> */}
+            {/* <th style={{ textAlign: "left", padding: "8px" }}>Queue</th> */}
+            {/* <th style={{ textAlign: "left", padding: "8px" }}>Pass Rate</th> */}
             <th style={{ textAlign: "left", padding: "8px" }}>Actions</th>
           </tr>
         </thead>
@@ -57,18 +66,18 @@ export default function ResultsBox({ runs = [] }) {
                   <td style={{ padding: "8px" }}>{run.cyclrInfo?.accountId || "-"}</td>
                   <td style={{ padding: "8px" }}>{run.cyclrInfo?.cycleId || "-"}</td>
                   <td style={{ padding: "8px" }}>{run.cyclrInfo?.transactionId || "-"}</td>
-                  <td style={{ padding: "8px" }}>{run.status || "-"}</td>
-                  <td style={{ padding: "8px" }}>{run.queue || "-"}</td>
-                  <td style={{ padding: "8px" }}>{run.passRate != null ? `${run.passRate}%` : "-"}</td>
+                  {/* <td style={{ padding: "8px" }}>{run.status || "-"}</td> */}
+                  {/* <td style={{ padding: "8px" }}>{run.queue || "-"}</td> */}
+                  {/* <td style={{ padding: "8px" }}>{run.passRate != null ? `${run.passRate}%` : "-"}</td> */}
                   <td style={{ padding: "8px" }}>
                     <button style={{ padding: "4px 8px", borderRadius: "4px", cursor: "pointer", border: "none", }}>
                       <IoPlayOutline />
                     </button>
-                    <button style={{ padding: "4px 8px", borderRadius: "4px", cursor: "pointer", border: "none", }}>
+                    <button style={{ padding: "4px 8px", borderRadius: "4px", cursor: "pointer", border: "none", }} onClick={() => handleDelete(run.runId)}>
                       <ImBin />
                     </button>
                   </td>
-                </tr>
+                </tr> 
               );
             })
           )}
