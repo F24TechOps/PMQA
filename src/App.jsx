@@ -9,38 +9,26 @@ import Header from "./components/ui/header.jsx";
 import UploadSection from "./components/UploadSection.jsx";
 import TransactionHistory from "./components/TransactionHistory.jsx";
 import { useState, useEffect } from "react";
-import { sendRunData } from "./api-client/api.js";
+import { getResults, sendRunData } from "./api-client/api.js";
 
 function App() {
   const [expectedFields, setExpectedFields] = useState([]);
   const [actualJson, setActualJson] = useState(null);
-  const [transactionContext, setTransactionContext] = useState(null);
-
-  // test for console
-   useEffect(() => {
-    console.log("Expected Fields changed:", expectedFields);
-  }, [expectedFields]);
+  const [resultId, setResultId] = useState(null);
+  const [resultData, setResultData] = useState(null);
 
   useEffect(() => {
-    console.log("Actual JSON changed:", actualJson);
-  }, [actualJson]);
+    if (!resultId || !resultId.runId || !resultId.resultId) return;
 
-  useEffect(() => {
-    const payload = {
-      expectedFields, 
-      actualOutput: actualJson,
-      transactionContext
-    } 
-    console.log("sending payload to server", payload)
+    async function getResult() {
+      const res = await getResults(resultId.runId, resultId.resultId);
+      setResultData(res.data.results.resultsObj);
+    }
 
-    sendRunData(payload)
-    .then((res) => {
-      console.log("response data:", res.data)
-    })
-    .catch((err) => {
-      console.log("error sending data", err)
-    })
-  }, [expectedFields, actualJson, transactionContext])
+    getResult();
+  }, [resultId]);
+
+  console.log(resultData);
 
   return (
     <Router>
@@ -68,10 +56,20 @@ function App() {
                   onChange={setActualJson}
                 />
               </div>
-              <TransactionContext className="transaction-component" />
-              <EmptyValidation />
-              <SummaryPanel />
-              <ResultsTable />
+              <TransactionContext
+                className="transaction-component"
+                expectedFields={expectedFields}
+                actualJson={actualJson}
+                onRunResult={setResultId}
+              />
+              {resultData ? (
+                <div>
+                  <SummaryPanel runResult={resultData.summary} />
+                  <ResultsTable runResult={resultData.fields} />
+                </div>
+              ) : (
+                <EmptyValidation />
+              )}
             </div>
           }
         />

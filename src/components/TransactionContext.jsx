@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import Card from "./ui/card";
 import { AiOutlinePlayCircle } from "react-icons/ai";
-import { getAccounts, getCyclesByAccount, runTransactionValidation } from "../api-client/api";
+import {
+  getAccounts,
+  getCyclesByAccount,
+  runTransactionValidation,
+  sendExpectedFieldUpload,
+  sendRunData,
+} from "../api-client/api";
 
-import AccountDropdown from "./ui/AccountDropdown"
+import AccountDropdown from "./ui/AccountDropdown";
 import CycleDropdown from "./ui/CycleDropdown";
 
-export default function TransactionContext() {
+export default function TransactionContext({ expectedFields, actualJson, onRunResult }) {
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState("");
   const [cycles, setCycles] = useState([]);
@@ -46,17 +52,44 @@ export default function TransactionContext() {
 
   const handleSubmit = async () => {
     if (!selectedAccount || !selectedCycle || !transactionId) {
+      //this should be visual
       alert("Please fill all fields!");
-      return;
     }
 
     try {
-      const result = await runTransactionValidation(selectedAccount, selectedCycle, transactionId);
-      console.log("Validation result:", result);
-      alert("Transaction validated successfully!");
+      await runTransactionValidation(
+        selectedAccount,
+        selectedCycle,
+        transactionId
+      );
     } catch (err) {
       console.error("Error validating transaction:", err);
-      alert("Failed to validate transaction.");
+      alert(
+        "Failed to validate transaction. Please check your inputs & try again. If this issue persists please raise a ticket with Technical Services"
+      );
+    }
+
+    const uploadId = await sendExpectedFieldUpload(expectedFields);
+
+    const runData = {
+      expectedFields: expectedFields,
+      actualOutput: actualJson,
+      transactionContext: {
+        accountId: selectedAccount,
+        cycleId: selectedCycle,
+        transactionId: transactionId,
+      },
+      uploadId: uploadId,
+    };
+
+    try {
+      const res = await sendRunData(runData);
+      
+      if (onRunResult) {
+        onRunResult(res)
+      }
+    } catch (err) {
+      console.warn("Error starting run.", err);
     }
   };
 
@@ -64,10 +97,19 @@ export default function TransactionContext() {
     <Card>
       <div style={{ padding: "1rem", textAlign: "left" }}>
         <h3>Transaction Context</h3>
-        <p>Select the account, cycle, and enter the transaction ID for validation</p>
+        <p>
+          Select the account, cycle, and enter the transaction ID for validation
+        </p>
 
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginTop: "1rem" }}>
-          <div style={{ flex: "1 1 250px", minWidth: "200px"}}>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "1rem",
+            marginTop: "1rem",
+          }}
+        >
+          <div style={{ flex: "1 1 250px", minWidth: "200px" }}>
             <AccountDropdown
               accounts={accounts}
               selectedAccount={selectedAccount}
@@ -83,8 +125,17 @@ export default function TransactionContext() {
             />
           </div>
 
-          <div style={{ flex: "1 1 250px", minWidth: "200px", display: "flex", flexDirection: "column" }}>
-            <label><strong>Transaction ID</strong></label>
+          <div
+            style={{
+              flex: "1 1 250px",
+              minWidth: "200px",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <label>
+              <strong>Transaction ID</strong>
+            </label>
             <input
               type="text"
               value={transactionId}
@@ -97,13 +148,19 @@ export default function TransactionContext() {
                 color: "#000000",
                 border: "1px solid #ccc",
                 outline: "none",
-                marginTop: "1rem"
+                marginTop: "1rem",
               }}
             />
           </div>
         </div>
 
-        <div style={{ marginTop: "2rem", display: "flex", justifyContent: "flex-start" }}>
+        <div
+          style={{
+            marginTop: "2rem",
+            display: "flex",
+            justifyContent: "flex-start",
+          }}
+        >
           <button
             onClick={handleSubmit}
             style={{
@@ -121,7 +178,9 @@ export default function TransactionContext() {
             }}
           >
             <AiOutlinePlayCircle size="2em" style={{ paddingRight: "10px" }} />
-            <p style={{ fontSize: "1rem" }}><strong>Run Validation</strong></p>
+            <p style={{ fontSize: "1rem" }}>
+              <strong>Run Validation</strong>
+            </p>
           </button>
         </div>
       </div>
