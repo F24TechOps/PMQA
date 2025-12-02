@@ -8,7 +8,7 @@ export default function CycleDropdown({ cycles = [], selectedCycle, setSelectedC
         value={selectedCycle}
         onChange={(e) => setSelectedCycle(e.target.value)}
         style={{
-          padding: "0.75rem",
+          padding: "0.9rem",
           borderRadius: "0.5rem",
           border: "1px solid #ccc",
           backgroundColor: "#f4f5f6",

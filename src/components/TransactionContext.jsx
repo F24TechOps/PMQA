@@ -146,7 +146,7 @@ export default function TransactionContext({ expectedFields, actualJson, onRunRe
                 borderRadius: "0.75rem",
                 backgroundColor: "#f4f5f6",
                 color: "#000000",
-                border: "1px solid #f4f5f6",
+                border: "1px solid #ccc",
                 outline: "none",
                 marginTop: "1rem",
               }}
