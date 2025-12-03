@@ -32,16 +32,15 @@ export async function getCyclesByAccount(accountID) {
   return response.data;
 }
 
-export async function runTransactionValidation(
-  accountID,
-  cycleID,
-  transactionID
-) {
+export async function runTransactionValidation(accountID, cycleID, transactionID) {
   const { data } = await axios.get(
     `${baseURL}/transactions/${accountID}/${cycleID}/${transactionID}`
   );
-  return data.transaction?.Response;
+
+  return data;
 }
+
+
 
 export async function sendExpectedFieldUpload(expectedFields) {
   const res = await axios.post(`${baseURL}/uploads`, expectedFields);

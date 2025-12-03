@@ -12,7 +12,14 @@ import {
 import AccountDropdown from "./ui/AccountDropdown";
 import CycleDropdown from "./ui/CycleDropdown";
 
-export default function TransactionContext({ expectedFields, actualJson, onRunResult }) {
+export default function TransactionContext({
+  expectedFields,
+  actualJson,
+  onRunResult,
+  setSelectedAccountName,
+  setSelectedCycleName,
+  setSelectedTransactionId,
+}) {
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState("");
   const [cycles, setCycles] = useState([]);
@@ -32,7 +39,6 @@ export default function TransactionContext({ expectedFields, actualJson, onRunRe
     fetchAccounts();
   }, []);
 
-  // Fetch cycles when selectedAccount changes
   useEffect(() => {
     async function fetchCycles() {
       if (!selectedAccount) {
@@ -41,8 +47,8 @@ export default function TransactionContext({ expectedFields, actualJson, onRunRe
         return;
       }
       try {
-        const cyclesData = await getCyclesByAccount(selectedAccount);
-        setCycles(cyclesData);
+        const data = await getCyclesByAccount(selectedAccount);
+        setCycles(data);
       } catch (err) {
         console.error("Error fetching cycles:", err);
       }
@@ -50,11 +56,24 @@ export default function TransactionContext({ expectedFields, actualJson, onRunRe
     fetchCycles();
   }, [selectedAccount]);
 
+  useEffect(() => {
+  const accountObj = accounts.find((a) => String(a.Id) === String(selectedAccount));
+  setSelectedAccountName(accountObj?.Name || "");
+}, [selectedAccount, accounts, setSelectedAccountName]);
+
+
+  useEffect(() => {
+  const cycleObj = cycles.find((c) => c.Id === selectedCycle);
+  setSelectedCycleName(cycleObj ? cycleObj.Name : "");
+}, [selectedCycle, cycles, setSelectedCycleName]);
+
+
   const handleSubmit = async () => {
     if (!selectedAccount || !selectedCycle || !transactionId) {
-      //this should be visual
       alert("Please fill all fields!");
+      return;
     }
+
 
     try {
       await runTransactionValidation(
@@ -62,6 +81,13 @@ export default function TransactionContext({ expectedFields, actualJson, onRunRe
         selectedCycle,
         transactionId
       );
+
+
+      const accountObj = accounts.find((a) => a.Id === selectedAccount);
+      const cycleObj = cycles.find((c) => c.Id === selectedCycle);
+      setSelectedAccountName(accountObj ? accountObj.Name : "");
+      setSelectedCycleName(cycleObj ? cycleObj.Name : "");
+      setSelectedTransactionId(transactionId);
     } catch (err) {
       console.error("Error validating transaction:", err);
       alert(
@@ -84,9 +110,9 @@ export default function TransactionContext({ expectedFields, actualJson, onRunRe
 
     try {
       const res = await sendRunData(runData);
-      
+
       if (onRunResult) {
-        onRunResult(res)
+        onRunResult(res);
       }
     } catch (err) {
       console.warn("Error starting run.", err);
