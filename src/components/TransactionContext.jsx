@@ -25,6 +25,8 @@ export default function TransactionContext({
   const [cycles, setCycles] = useState([]);
   const [selectedCycle, setSelectedCycle] = useState("");
   const [transactionId, setTransactionId] = useState("");
+  const [isLoadingCycles, setIsLoadingCycles] = useState(false);
+
 
   // Fetch accounts on mount
   useEffect(() => {
@@ -40,21 +42,28 @@ export default function TransactionContext({
   }, []);
 
   useEffect(() => {
-    async function fetchCycles() {
-      if (!selectedAccount) {
-        setCycles([]);
-        setSelectedCycle("");
-        return;
-      }
-      try {
-        const data = await getCyclesByAccount(selectedAccount);
-        setCycles(data);
-      } catch (err) {
-        console.error("Error fetching cycles:", err);
-      }
+  async function fetchCycles() {
+    if (!selectedAccount) {
+      setCycles([]);
+      setSelectedCycle("");
+      return;
     }
-    fetchCycles();
-  }, [selectedAccount]);
+
+    setIsLoadingCycles(true); // ⬅ Start loading
+
+    try {
+      const data = await getCyclesByAccount(selectedAccount);
+      setCycles(data);
+    } catch (err) {
+      console.error("Error fetching cycles:", err);
+    } finally {
+      setIsLoadingCycles(false); // ⬅ Finished loading
+    }
+  }
+
+  fetchCycles();
+}, [selectedAccount]);
+
 
   useEffect(() => {
   const accountObj = accounts.find((a) => String(a.Id) === String(selectedAccount));
@@ -143,11 +152,13 @@ export default function TransactionContext({
             />
           </div>
 
-          <div style={{ flex: "1 1 250px", minWidth: "200px" }}>
+          <div style={{ flex: "1 1 250px", minWidth: "200px", display: ""}}>
             <CycleDropdown
               cycles={cycles}
               selectedCycle={selectedCycle}
               setSelectedCycle={setSelectedCycle}
+              disabled={!selectedAccount} 
+              isLoading={isLoadingCycles}
             />
           </div>
 
