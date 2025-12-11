@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:4000/api/qa";
+const baseURL = 'https://pmqa-be.onrender.com/api/qa'
 
 /**
  *
@@ -36,11 +36,8 @@ export async function runTransactionValidation(accountID, cycleID, transactionID
   const { data } = await axios.get(
     `${baseURL}/transactions/${accountID}/${cycleID}/${transactionID}`
   );
-
   return data;
 }
-
-
 
 export async function sendExpectedFieldUpload(expectedFields) {
   const res = await axios.post(`${baseURL}/uploads`, expectedFields);

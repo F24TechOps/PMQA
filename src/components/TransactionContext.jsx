@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "./ui/card";
 import { AiOutlinePlayCircle } from "react-icons/ai";
 import {
@@ -9,8 +9,7 @@ import {
   sendRunData,
 } from "../api-client/api";
 
-import AccountDropdown from "./ui/AccountDropdown";
-import CycleDropdown from "./ui/CycleDropdown";
+import DataDropdown from "./ui/AccountDropdown";
 
 export default function TransactionContext({
   expectedFields,
@@ -57,16 +56,16 @@ export default function TransactionContext({
   }, [selectedAccount]);
 
   useEffect(() => {
-  const accountObj = accounts.find((a) => String(a.Id) === String(selectedAccount));
-  setSelectedAccountName(accountObj?.Name || "");
-}, [selectedAccount, accounts, setSelectedAccountName]);
-
+    const accountObj = accounts.find(
+      (a) => String(a.Id) === String(selectedAccount)
+    );
+    setSelectedAccountName(accountObj?.Name || "");
+  }, [selectedAccount, accounts, setSelectedAccountName]);
 
   useEffect(() => {
-  const cycleObj = cycles.find((c) => c.Id === selectedCycle);
-  setSelectedCycleName(cycleObj ? cycleObj.Name : "");
-}, [selectedCycle, cycles, setSelectedCycleName]);
-
+    const cycleObj = cycles.find((c) => c.Id === selectedCycle);
+    setSelectedCycleName(cycleObj ? cycleObj.Name : "");
+  }, [selectedCycle, cycles, setSelectedCycleName]);
 
   const handleSubmit = async () => {
     if (!selectedAccount || !selectedCycle || !transactionId) {
@@ -74,14 +73,12 @@ export default function TransactionContext({
       return;
     }
 
-
     try {
       await runTransactionValidation(
         selectedAccount,
         selectedCycle,
         transactionId
       );
-
 
       const accountObj = accounts.find((a) => a.Id === selectedAccount);
       const cycleObj = cycles.find((c) => c.Id === selectedCycle);
@@ -136,18 +133,20 @@ export default function TransactionContext({
           }}
         >
           <div style={{ flex: "1 1 250px", minWidth: "200px" }}>
-            <AccountDropdown
-              accounts={accounts}
-              selectedAccount={selectedAccount}
-              setSelectedAccount={setSelectedAccount}
+            <DataDropdown
+              data={accounts}
+              selectedData={selectedAccount}
+              setSelectedData={setSelectedAccount}
+              label="Account"
             />
           </div>
 
           <div style={{ flex: "1 1 250px", minWidth: "200px" }}>
-            <CycleDropdown
-              cycles={cycles}
-              selectedCycle={selectedCycle}
-              setSelectedCycle={setSelectedCycle}
+            <DataDropdown
+              data={cycles}
+              selectedData={selectedCycle}
+              setSelectedData={setSelectedCycle}
+              label="Cycle"
             />
           </div>
 
@@ -159,9 +158,9 @@ export default function TransactionContext({
               flexDirection: "column",
             }}
           >
-            <label>
+            <p style={{ marginBottom: 0 }}>
               <strong>Transaction ID</strong>
-            </label>
+            </p>
             <input
               type="text"
               value={transactionId}

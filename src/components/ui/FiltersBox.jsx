@@ -1,5 +1,5 @@
 import React from "react";
-import AccountDropdown from "./AccountDropdown";
+import DataDropdown from "./AccountDropdown";
 import CycleDropdown from "./CycleDropdown";
 
 export default function FiltersBox({ filters, setFilters, accounts, cycles }) {
@@ -16,44 +16,68 @@ export default function FiltersBox({ filters, setFilters, accounts, cycles }) {
       >
         {/* Account */}
         <div style={{ flex: "1 1 22%", minWidth: "220px" }}>
-          <AccountDropdown
-            accounts={accounts}
-            selectedAccount={filters.account}
-            setSelectedAccount={(value) =>
+          <DataDropdown
+            data={accounts}
+            selectedData={filters.account}
+            setSelectedData={(value) =>
               setFilters({ ...filters, account: value, cycle: "" })
             }
+            label="Account"
           />
         </div>
 
         {/* Cycle */}
         <div style={{ flex: "1 1 22%", minWidth: "220px" }}>
-          <CycleDropdown
-            cycles={cycles}
-            selectedCycle={filters.cycle}
-            setSelectedCycle={(value) => setFilters({ ...filters, cycle: value })}
+          <DataDropdown
+            data={cycles}
+            selectedData={filters.cycle}
+            setSelectedData={(value) =>
+              setFilters({ ...filters, cycle: value })
+            }
+            label="Cycle"
           />
         </div>
 
         {/* Date From */}
-        <div style={{ flex: "1 1 22%", minWidth: "220px", display: "flex", flexDirection: "column" }}>
-          <label><strong>Date From</strong></label>
+        <div
+          style={{
+            flex: "1 1 22%",
+            minWidth: "220px",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <p style={{ marginBottom: 0}}>
+            <strong>Date From</strong>
+          </p>
           <input
             type="date"
             value={filters.dateFrom}
-            onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value })}
+            onChange={(e) =>
+              setFilters({ ...filters, dateFrom: e.target.value })
+            }
             style={{
               padding: "0.9rem",
               borderRadius: "0.5rem",
               border: "1px solid #ccc",
               backgroundColor: "#f4f5f6",
-              marginTop: "1rem"
+              marginTop: "1rem",
             }}
           />
         </div>
 
         {/* Date To */}
-        <div style={{ flex: "1 1 22%", minWidth: "220px", display: "flex", flexDirection: "column" }}>
-          <label><strong>Date To</strong></label>
+        <div
+          style={{
+            flex: "1 1 22%",
+            minWidth: "220px",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <p style={{ marginBottom: 0}}>
+            <strong>Date To</strong>
+          </p>
           <input
             type="date"
             value={filters.dateTo}
@@ -63,7 +87,7 @@ export default function FiltersBox({ filters, setFilters, accounts, cycles }) {
               borderRadius: "0.5rem",
               border: "1px solid #ccc",
               backgroundColor: "#f4f5f6",
-              marginTop: "1rem"
+              marginTop: "1rem",
             }}
           />
         </div>

@@ -1,20 +1,19 @@
-import React from "react";
 import Select from "react-select";
 
-export default function AccountDropdown({ accounts = [], selectedAccount, setSelectedAccount }) {
-  const options = accounts.map(acc => ({
+export default function DataDropdown({ data = [], selectedData, setSelectedData, label }) {
+  const options = data.map(acc => ({
     value: acc.Id || acc.id,
     label: acc.Name || acc.name
   }));
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <label><strong>Account</strong></label>
+      <p style={{ marginBottom: 0}}><strong>{label}</strong></p>
     <Select
-  value={options.find(opt => opt.value === selectedAccount) || null}
-  onChange={(option) => setSelectedAccount(option?.value || "")}
+  value={options.find(opt => opt.value === selectedData) || null}
+  onChange={(option) => setSelectedData(option?.value || "")}
   options={options}
-  placeholder="Select Account..."
+  placeholder={`Select ${label}...`}
   isClearable
   styles={{
     control: (base) => ({
