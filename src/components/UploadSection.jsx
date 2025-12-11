@@ -76,7 +76,7 @@ bht68u3dx2
           border: "none",
           minHeight: "300px",
           minWidth: "20vw",
-          backgroundColor: "#f4f5f6",
+          backgroundColor: error ? "#ffc0c0ff" : "#f4f5f6",
         }}
       />
     </Card>
