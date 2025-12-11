@@ -70,15 +70,15 @@ function App() {
             <div className="App">
               <div className="input-section">
                 <UploadSection
-                  title="Expected Fields"
-                  description="Upload or paste the list of fields that should exist in the workflow output"
+                  title={"Expected Fields"}
+                  description="Paste the required output fields"
                   type="fields"
                   onChange={setExpectedFields}
                 />
 
                 <UploadSection
                   title="Actual Output (JSON)"
-                  description="Paste the JSON response from Cyclr transaction logs"
+                  description="Paste the Cyclr transaction JSON"
                   type="json"
                   onChange={setActualJson}
                 />
