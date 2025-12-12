@@ -1,7 +1,6 @@
 import Card from "./ui/card";
 import { useState, useEffect } from "react";
-/*export default function ResultsTable({ runResult }) {
-  console.log('results table', runResult);*/
+
 export default function ResultsTable({ fields }) {
   const [isLoading, setIsLoading] = useState(true);
    useEffect(() => {

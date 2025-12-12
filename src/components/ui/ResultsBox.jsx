@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { IoPlayOutline } from "react-icons/io5";
+import { useState } from "react";
 import { ImBin } from "react-icons/im";
 import { deleteRun } from "../../api-client/api.js";
 

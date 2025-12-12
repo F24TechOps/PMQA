@@ -1,6 +1,4 @@
-import React from "react";
 import DataDropdown from "./AccountDropdown";
-import CycleDropdown from "./CycleDropdown";
 
 export default function FiltersBox({ filters, setFilters, accounts, cycles }) {
   return (
