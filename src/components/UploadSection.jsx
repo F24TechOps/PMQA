@@ -22,7 +22,8 @@ export default function UploadSection({ title, description, type, onChange }) {
 
     if (type === "json") {
       try {
-        const parsedJSON = JSON.parse(input);
+        if (!input.length) return;
+        const parsedJSON = JSON.stringify(JSON.parse(input), null, 2);
         onChange(parsedJSON);
         setError(null);
       } catch (err) {
@@ -70,13 +71,12 @@ bht68u3dx2
         onChange={(e) => setInput(e.target.value)}
         placeholder={type === "json" ? outputPlaceholder : expectedPlaceholder}
         style={{
-          width: "100%",
-          padding: "0.5rem",
+          padding: "1rem",
           borderRadius: "8px",
           border: "none",
           minHeight: "300px",
           minWidth: "20vw",
-          backgroundColor: error ? "#ffc0c0ff" : "#f4f5f6",
+          backgroundColor: error !== null ? "#ffc0c0ff" : "#f4f5f6",
         }}
       />
     </Card>
