@@ -1,5 +1,4 @@
 import Card from "./ui/card";
-//import { useState, useEffect } from "react";
 
 export default function SummaryPanel({
   summary,

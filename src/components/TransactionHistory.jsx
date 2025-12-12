@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Card from "./ui/card";
 import FiltersBox from "./ui/FiltersBox";
 import ResultsBox from "./ui/ResultsBox";
